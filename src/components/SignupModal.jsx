@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { postToSlack, formatUserLoginSlackMessage } from '../utils/slack';
 import posthog from 'posthog-js';
+import { X } from 'lucide-react';
 
-export default function SignupModal({ onComplete }) {
+export default function SignupModal({ onComplete, onClose, closable = true }) {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -56,8 +57,16 @@ export default function SignupModal({ onComplete }) {
 
   return (
     <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 text-left">
-      <div className="bg-white border border-gray-200 p-8 rounded-2xl max-w-md w-full shadow-2xl">
-        <div className="mb-8 text-center">
+      <div className="relative bg-white border border-gray-200 p-8 rounded-2xl max-w-md w-full shadow-2xl">
+        {closable && (
+          <button 
+            onClick={onClose}
+            className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <X size={20} />
+          </button>
+        )}
+        <div className="mb-8 text-center pt-2">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Start Your 3D Room Design</h2>
           <p className="text-gray-500">Enter your details below to unlock the 3D designer and start creating your dream space.</p>
         </div>

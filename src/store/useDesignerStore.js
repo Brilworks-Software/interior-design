@@ -12,6 +12,14 @@ function cloneObjects(objects) {
 const useDesignerStore = create((set, get) => ({
   // App screen
   screen: 'select',
+  
+  // Signup Modal State
+  showSignupModal: false,
+  signupModalClosable: true,
+  setShowSignupModal: (show, closable = true) => set({ 
+    showSignupModal: show, 
+    signupModalClosable: closable 
+  }),
 
   // Room
   selectedRoom: null,

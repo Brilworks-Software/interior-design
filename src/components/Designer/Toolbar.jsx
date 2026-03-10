@@ -11,8 +11,13 @@ export default function Toolbar() {
   const redo = useDesignerStore((s) => s.redo)
   const exportDesign = useDesignerStore((s) => s.exportDesign)
   const importDesign = useDesignerStore((s) => s.importDesign)
+  const setShowSignupModal = useDesignerStore((s) => s.setShowSignupModal)
 
   function handleExport() {
+    if (!localStorage.getItem('has_signed_up_designs')) {
+      setShowSignupModal(true, true)
+      return
+    }
     const json = exportDesign()
     const blob = new Blob([json], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
@@ -38,6 +43,10 @@ export default function Toolbar() {
   }
 
   function handleScreenshot() {
+    if (!localStorage.getItem('has_signed_up_designs')) {
+      setShowSignupModal(true, true)
+      return
+    }
     const canvas = document.querySelector('canvas')
     if (!canvas) return
     const link = document.createElement('a')

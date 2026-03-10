@@ -1,4 +1,4 @@
-import { Component, useState, useEffect } from 'react'
+import { Component, useEffect } from 'react'
 import useDesignerStore from './store/useDesignerStore'
 import RoomSelector from './components/RoomSelector/RoomSelector'
 import DesignerLayout from './components/Designer/DesignerLayout'
@@ -29,17 +29,55 @@ class ErrorBoundary extends Component {
 
 function AppInner() {
   const screen = useDesignerStore((s) => s.screen)
-  const [showSignup, setShowSignup] = useState(true)
+  const showSignupModal = useDesignerStore((s) => s.showSignupModal)
+  const signupModalClosable = useDesignerStore((s) => s.signupModalClosable)
+  const setShowSignupModal = useDesignerStore((s) => s.setShowSignupModal)
 
   useEffect(() => {
-    if (localStorage.getItem('has_signed_up_designs')) {
-      setShowSignup(false)
+    if (localStorage.getItem('has_signed_up_designs')) return
+
+    let startTime = parseInt(localStorage.getItem('session_start_time'), 10)
+    if (!startTime || isNaN(startTime)) {
+      startTime = Date.now()
+      localStorage.setItem('session_start_time', startTime.toString())
     }
+
+    const interval = setInterval(() => {
+      if (localStorage.getItem('has_signed_up_designs')) {
+        clearInterval(interval)
+        return
+      }
+
+      const elapsedMs = Date.now() - startTime
+      const elapsedMinutes = Math.floor(elapsedMs / 60000)
+
+      if (elapsedMinutes >= 10 && elapsedMinutes < 25) {
+        if (!localStorage.getItem('has_shown_10min_popup')) {
+          localStorage.setItem('has_shown_10min_popup', 'true')
+          useDesignerStore.getState().setShowSignupModal(true, true)
+        }
+      }
+
+      if (elapsedMinutes >= 25) {
+        const state = useDesignerStore.getState()
+        if (!state.showSignupModal || state.signupModalClosable) {
+          useDesignerStore.getState().setShowSignupModal(true, false)
+        }
+      }
+    }, 10000)
+
+    return () => clearInterval(interval)
   }, [])
 
   return (
     <div style={{ width: '100%', height: '100%' }}>
-      {showSignup && <SignupModal onComplete={() => setShowSignup(false)} />}
+      {showSignupModal && (
+        <SignupModal 
+          onComplete={() => setShowSignupModal(false)} 
+          onClose={() => setShowSignupModal(false)}
+          closable={signupModalClosable}
+        />
+      )}
       {screen === 'select' && <RoomSelector />}
       {screen === 'custom' && <CustomRoomWizard />}
       {screen === 'design' && <DesignerLayout />}
