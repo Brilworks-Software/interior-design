@@ -15,7 +15,7 @@ export default function Toolbar() {
 
   function handleExport() {
     if (!localStorage.getItem('has_signed_up_designs')) {
-      setShowSignupModal(true, true)
+      setShowSignupModal(true, false)
       return
     }
     const json = exportDesign()
@@ -44,7 +44,7 @@ export default function Toolbar() {
 
   function handleScreenshot() {
     if (!localStorage.getItem('has_signed_up_designs')) {
-      setShowSignupModal(true, true)
+      setShowSignupModal(true, false)
       return
     }
     const canvas = document.querySelector('canvas')
