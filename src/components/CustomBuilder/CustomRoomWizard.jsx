@@ -64,9 +64,9 @@ export default function CustomRoomWizard() {
   }
 
   return (
-    <div className="flex w-screen h-screen bg-gray-200 overflow-hidden">
+    <div className="flex w-full h-full bg-gray-200 overflow-hidden">
       {/* Left Panel */}
-      <div className="w-[320px] shrink-0 bg-white flex flex-col shadow-lg z-10 h-screen overflow-hidden">
+      <div className="w-[320px] shrink-0 bg-white flex flex-col shadow-lg z-10 h-full overflow-hidden">
         {/* Back to rooms */}
         <button
           onClick={goToSelect}

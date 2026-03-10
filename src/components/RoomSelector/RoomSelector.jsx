@@ -10,7 +10,7 @@ export default function RoomSelector() {
   const goToCustom = useDesignerStore((s) => s.goToCustom)
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="h-full bg-gray-50 flex flex-col overflow-hidden">
       {/* Header */}
       <header className="bg-white border-b border-gray-200 px-8 py-5 flex items-center justify-between">
         <div className="flex items-center gap-4">

@@ -55,34 +55,35 @@ export default function SignupModal({ onComplete }) {
   };
 
   return (
-    <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 text-left">
-      <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-2xl max-w-md w-full shadow-2xl">
+    <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 text-left">
+      <div className="bg-white border border-gray-200 p-8 rounded-2xl max-w-md w-full shadow-2xl">
         <div className="mb-8 text-center">
-          <h2 className="text-2xl font-bold text-white mb-2">Welcome to Interior Design Planner</h2>
-          <p className="text-zinc-400">Please enter your details to start designing your dream room.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Start Your 3D Room Design</h2>
+          <p className="text-gray-500">Enter your details below to unlock the 3D designer and start creating your dream space.</p>
         </div>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1">Name</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
             <input
               type="text"
               required
+              autoFocus
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Your full name"
+              className="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors"
+              placeholder="e.g. John Doe"
             />
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1">WhatsApp / Phone Number</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">WhatsApp / Phone Number</label>
             <input
               type="tel"
               required
               value={number}
               onChange={(e) => setNumber(e.target.value)}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors"
               placeholder="+1 234 567 8900"
             />
           </div>
@@ -90,7 +91,7 @@ export default function SignupModal({ onComplete }) {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg px-4 py-3 mt-4 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-lg px-4 py-3 mt-4 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
           >
             {isSubmitting ? 'Starting...' : 'Start Designing'}
           </button>
