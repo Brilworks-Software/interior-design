@@ -11,7 +11,10 @@ export async function postToSlack(text) {
   }
 
   try {
-    const response = await fetch(url, {
+    // Using a CORS proxy since Slack's chat.postMessage does not support browser CORS natively
+    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+    
+    const response = await fetch(proxyUrl, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
