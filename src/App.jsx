@@ -1,8 +1,9 @@
-import { Component } from 'react'
+import { Component, useState, useEffect } from 'react'
 import useDesignerStore from './store/useDesignerStore'
 import RoomSelector from './components/RoomSelector/RoomSelector'
 import DesignerLayout from './components/Designer/DesignerLayout'
 import CustomRoomWizard from './components/CustomBuilder/CustomRoomWizard'
+import SignupModal from './components/SignupModal'
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -28,8 +29,17 @@ class ErrorBoundary extends Component {
 
 function AppInner() {
   const screen = useDesignerStore((s) => s.screen)
+  const [showSignup, setShowSignup] = useState(true)
+
+  useEffect(() => {
+    if (localStorage.getItem('has_signed_up_designs')) {
+      setShowSignup(false)
+    }
+  }, [])
+
   return (
     <div style={{ width: '100%', height: '100%' }}>
+      {showSignup && <SignupModal onComplete={() => setShowSignup(false)} />}
       {screen === 'select' && <RoomSelector />}
       {screen === 'custom' && <CustomRoomWizard />}
       {screen === 'design' && <DesignerLayout />}
