@@ -34,40 +34,16 @@ function AppInner() {
   const setShowSignupModal = useDesignerStore((s) => s.setShowSignupModal)
 
   useEffect(() => {
+    if (screen !== 'design') return
     if (localStorage.getItem('has_signed_up_designs')) return
 
-    let startTime = parseInt(localStorage.getItem('session_start_time'), 10)
-    if (!startTime || isNaN(startTime)) {
-      startTime = Date.now()
-      localStorage.setItem('session_start_time', startTime.toString())
-    }
+    const timer = setTimeout(() => {
+      if (localStorage.getItem('has_signed_up_designs')) return
+      useDesignerStore.getState().setShowSignupModal(true, true)
+    }, 90000)
 
-    const interval = setInterval(() => {
-      if (localStorage.getItem('has_signed_up_designs')) {
-        clearInterval(interval)
-        return
-      }
-
-      const elapsedMs = Date.now() - startTime
-      const elapsedMinutes = Math.floor(elapsedMs / 60000)
-
-      if (elapsedMinutes >= 10 && elapsedMinutes < 25) {
-        if (!localStorage.getItem('has_shown_10min_popup')) {
-          localStorage.setItem('has_shown_10min_popup', 'true')
-          useDesignerStore.getState().setShowSignupModal(true, true)
-        }
-      }
-
-      if (elapsedMinutes >= 25) {
-        const state = useDesignerStore.getState()
-        if (!state.showSignupModal || state.signupModalClosable) {
-          useDesignerStore.getState().setShowSignupModal(true, false)
-        }
-      }
-    }, 10000)
-
-    return () => clearInterval(interval)
-  }, [])
+    return () => clearTimeout(timer)
+  }, [screen])
 
   return (
     <div style={{ width: '100%', minHeight: '100%' }}>
