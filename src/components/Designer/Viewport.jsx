@@ -105,6 +105,7 @@ function CameraController({ viewMode, controlsRef }) {
 function DraggableScene({ room, controlsRef }) {
   const objects = useDesignerStore((s) => s.objects)
   const updateObject = useDesignerStore((s) => s.updateObject)
+  const storeDraggingId = useDesignerStore((s) => s.setDraggingId)
   const [draggingId, setDraggingId] = useState(null)
   const draggingIdRef = useRef(null)
 
@@ -122,6 +123,7 @@ function DraggableScene({ room, controlsRef }) {
   function startDrag(id) {
     draggingIdRef.current = id
     setDraggingId(id)
+    storeDraggingId(id)
     if (controlsRef.current) controlsRef.current.enabled = false
   }
 
@@ -145,6 +147,7 @@ function DraggableScene({ room, controlsRef }) {
 
     draggingIdRef.current = null
     setDraggingId(null)
+    storeDraggingId(null)
     if (controlsRef.current) controlsRef.current.enabled = true
   }
 

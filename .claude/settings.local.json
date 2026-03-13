@@ -7,7 +7,14 @@
       "Bash(lsof:*)",
       "Bash(ls:*)",
       "Bash(rsync:*)",
-      "Bash(npx vite:*)"
+      "Bash(npx vite:*)",
+      "Bash(npx gltf-transform:*)",
+      "Bash(npx:*)",
+      "Bash(node:*)",
+      "Bash(curl:*)",
+      "Bash(git checkout:*)",
+      "Bash(git push:*)",
+      "Bash(git add:*)"
     ]
   }
 }

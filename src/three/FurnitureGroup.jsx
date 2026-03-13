@@ -2,7 +2,7 @@ import { useRef, useEffect, Suspense } from 'react'
 import * as THREE from 'three'
 import { furnitureComponents } from './furniture/index'
 import { furnitureModels } from '../data/furnitureModels'
-import GLBModel from './furniture/GLBModel'
+import ModelLoader from './furniture/ModelLoader'
 import useDesignerStore from '../store/useDesignerStore'
 
 const outlineMat = new THREE.LineBasicMaterial({ color: 0xffffff, depthTest: false })
@@ -106,7 +106,7 @@ export default function FurnitureGroup({ obj, draggingId, onStartDrag, onStopDra
     >
       {useGLB ? (
         <Suspense fallback={FurnitureComponent ? <FurnitureComponent color={obj.color} /> : null}>
-          <GLBModel
+          <ModelLoader
             url={modelConfig.path}
             color={obj.color}
             modelScale={modelConfig.scale}

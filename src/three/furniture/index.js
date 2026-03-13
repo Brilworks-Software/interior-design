@@ -16,6 +16,15 @@ import Plant from './Plant'
 import WallArt from './WallArt'
 import Bed from './Bed'
 import Nightstand from './Nightstand'
+import KitchenCounter from './KitchenCounter'
+import KitchenIsland from './KitchenIsland'
+import Fridge from './Fridge'
+import Stove from './Stove'
+import SinkCabinet from './SinkCabinet'
+import KitchenCabinet from './KitchenCabinet'
+import Microwave from './Microwave'
+import Dishwasher from './Dishwasher'
+import BarStool from './BarStool'
 
 export const furnitureComponents = {
   sofa: Sofa,
@@ -36,4 +45,13 @@ export const furnitureComponents = {
   'wall-art': WallArt,
   bed: Bed,
   nightstand: Nightstand,
+  'kitchen-counter': KitchenCounter,
+  'kitchen-island': KitchenIsland,
+  fridge: Fridge,
+  stove: Stove,
+  'sink-cabinet': SinkCabinet,
+  'kitchen-cabinet': KitchenCabinet,
+  microwave: Microwave,
+  dishwasher: Dishwasher,
+  'bar-stool': BarStool,
 }

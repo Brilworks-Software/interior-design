@@ -18,7 +18,7 @@ export default memo(function GLBModel({
 }) {
   const { scene } = useGLTF(url)
 
-  const clone = useMemo(() => {
+  const { clone, autoOffset } = useMemo(() => {
     const cloned = scene.clone(true)
 
     cloned.traverse((child) => {
@@ -29,13 +29,18 @@ export default memo(function GLBModel({
       }
     })
 
-    // Debug: log bounding box size for each model
+    // Compute bounding box to auto-snap model to floor
     const box = new THREE.Box3().setFromObject(cloned)
     const size = new THREE.Vector3()
     box.getSize(size)
-    console.log(`[GLB] ${url} — raw size: ${size.x.toFixed(2)} x ${size.y.toFixed(2)} x ${size.z.toFixed(2)}`)
+    const center = new THREE.Vector3()
+    box.getCenter(center)
+    console.log(`[GLB] ${url} — raw size: ${size.x.toFixed(2)} x ${size.y.toFixed(2)} x ${size.z.toFixed(2)}, min.y: ${box.min.y.toFixed(2)}, center: ${center.x.toFixed(2)},${center.y.toFixed(2)},${center.z.toFixed(2)}`)
 
-    return cloned
+    // Offset to center XZ on origin and place bottom on y=0
+    const autoOff = [-center.x, -box.min.y, -center.z]
+
+    return { clone: cloned, autoOffset: autoOff }
   }, [scene, url])
 
   // Apply color override when color prop changes
@@ -50,7 +55,9 @@ export default memo(function GLBModel({
 
   return (
     <group scale={modelScale} position={modelOffset}>
-      <primitive object={clone} />
+      <group position={autoOffset}>
+        <primitive object={clone} />
+      </group>
     </group>
   )
 })

@@ -70,10 +70,10 @@ function AppInner() {
   }, [])
 
   return (
-    <div style={{ width: '100%', height: '100%' }}>
+    <div style={{ width: '100%', minHeight: '100%' }}>
       {showSignupModal && (
-        <SignupModal 
-          onComplete={() => setShowSignupModal(false)} 
+        <SignupModal
+          onComplete={() => setShowSignupModal(false)}
           onClose={() => setShowSignupModal(false)}
           closable={signupModalClosable}
         />

@@ -3,6 +3,10 @@ import { demoBedroom, demoLivingRoom } from '../../data/demoDesigns'
 import RoomCard from './RoomCard'
 import useDesignerStore from '../../store/useDesignerStore'
 import { Plus } from 'lucide-react'
+import ChatPanel from '../Chat/ChatPanel'
+
+const regularRooms = rooms.filter((r) => r.type !== 'kitchen')
+const kitchenRooms = rooms.filter((r) => r.type === 'kitchen')
 
 export default function RoomSelector() {
   const setRoom = useDesignerStore((s) => s.setRoom)
@@ -38,35 +42,55 @@ export default function RoomSelector() {
         </div>
       </header>
 
-      {/* Room grid */}
-      <main className="flex-1 overflow-auto px-8 py-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="mb-6">
-            <h2 className="text-2xl font-semibold text-gray-900">Select a Room</h2>
-            <p className="text-gray-500 mt-1">
-              Pick one of our preset rooms to begin — you can furnish and customise it from there.
-            </p>
-          </div>
+      <main className="flex-1 px-8 py-8">
+        <div className="max-w-6xl mx-auto space-y-12">
+          {/* Rooms section */}
+          <section>
+            <div className="mb-6">
+              <h2 className="text-2xl font-semibold text-gray-900">Select a Room</h2>
+              <p className="text-gray-500 mt-1">
+                Pick a preset room to begin — you can furnish and customise it from there.
+              </p>
+            </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
-            <button
-              onClick={goToCustom}
-              className="flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-gray-300 hover:border-amber-400 hover:bg-amber-50 transition-all p-6 min-h-[140px]"
-            >
-              <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
-                <Plus size={20} className="text-amber-600" />
-              </div>
-              <div className="text-center">
-                <div className="text-sm font-semibold text-gray-700">Custom Room</div>
-                <div className="text-xs text-gray-400 mt-0.5">Set shape, dimensions, doors & windows</div>
-              </div>
-            </button>
-            {rooms.map((room) => (
-              <RoomCard key={room.id} room={room} onSelect={setRoom} />
-            ))}
-          </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+              <button
+                onClick={goToCustom}
+                className="flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-gray-300 hover:border-amber-400 hover:bg-amber-50 transition-all p-6 min-h-[140px]"
+              >
+                <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
+                  <Plus size={20} className="text-amber-600" />
+                </div>
+                <div className="text-center">
+                  <div className="text-sm font-semibold text-gray-700">Custom Room</div>
+                  <div className="text-xs text-gray-400 mt-0.5">Set shape, dimensions, doors & windows</div>
+                </div>
+              </button>
+              {regularRooms.map((room) => (
+                <RoomCard key={room.id} room={room} onSelect={setRoom} />
+              ))}
+            </div>
+          </section>
+
+          {/* Kitchen section */}
+          <section>
+            <div className="mb-6">
+              <h2 className="text-2xl font-semibold text-gray-900">Select a Kitchen</h2>
+              <p className="text-gray-500 mt-1">
+                Choose a kitchen layout and add appliances, counters, and more.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+              {kitchenRooms.map((room) => (
+                <RoomCard key={room.id} room={room} onSelect={setRoom} />
+              ))}
+            </div>
+          </section>
         </div>
       </main>
+
+      <ChatPanel />
     </div>
   )
 }

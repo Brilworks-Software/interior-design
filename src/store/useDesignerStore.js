@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { nanoid } from 'nanoid'
 import { findFreePosition } from '../utils/furnitureCollision'
+import { smartLayout } from '../utils/smartLayout'
 import { demoBedroom, demoLivingRoom } from '../data/demoDesigns'
 
 const MAX_HISTORY = 50
@@ -102,6 +103,10 @@ const useDesignerStore = create((set, get) => ({
   selectedObjectId: null,
   selectObject: (id) => set({ selectedObjectId: id }),
   clearSelection: () => set({ selectedObjectId: null }),
+
+  // Dragging (exposed for live measurement overlay)
+  draggingId: null,
+  setDraggingId: (id) => set({ draggingId: id }),
 
   // Camera view mode
   viewMode: 'dollhouse',
@@ -218,6 +223,32 @@ const useDesignerStore = create((set, get) => ({
 
   // Go to custom room builder
   goToCustom: () => set({ screen: 'custom', selectedObjectId: null }),
+
+  // Set up room from chat parser result
+  setupFromChat: (parsed) => {
+    const room = parsed.room
+    if (!room) return
+
+    // Use smart layout for intelligent placement
+    const layoutItems = smartLayout(parsed.items, room)
+    const objects = layoutItems.map((item) => ({
+      id: nanoid(),
+      ...item,
+    }))
+
+    set({
+      selectedRoom: room,
+      objects,
+      roomWallColor: null,
+      roomFloorColor: null,
+      screen: 'design',
+      selectedObjectId: null,
+      history: [cloneObjects(objects)],
+      historyIndex: 0,
+      viewMode: 'dollhouse',
+      lightingMode: 'off',
+    })
+  },
 }))
 
 export default useDesignerStore
