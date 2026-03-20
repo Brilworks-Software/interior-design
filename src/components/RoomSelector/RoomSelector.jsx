@@ -42,7 +42,7 @@ export default function RoomSelector() {
         </div>
       </header>
 
-      <main className="flex-1 px-8 py-8">
+      <main className="flex-1 overflow-y-auto px-8 py-8">
         <div className="max-w-6xl mx-auto space-y-12">
           {/* Rooms section */}
           <section>
