@@ -46,7 +46,7 @@ function AppInner() {
   }, [screen])
 
   return (
-    <div style={{ width: '100%', minHeight: '100%' }}>
+    <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
       {showSignupModal && (
         <SignupModal
           onComplete={() => setShowSignupModal(false)}
