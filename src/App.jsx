@@ -60,7 +60,6 @@ class ErrorBoundary extends Component {
 const router = createBrowserRouter([
   {
     path: "/",
-    index: true,
     element: <PublicLayout />,
     children: [
       { index: true, element: <RoomSelector /> },
@@ -72,9 +71,9 @@ const router = createBrowserRouter([
   {
     element: <AuthLayout />,
     children: [
-      { path: "/login", element: <LoginForm /> },
-      { path: "/register", element: <RegisterForm /> },
-      { path: "/signup", element: <RegisterForm /> },
+      { path: "login", element: <LoginForm /> },
+      { path: "register", element: <RegisterForm /> },
+      { path: "signup", element: <RegisterForm /> },
     ],
   },
   {
@@ -83,7 +82,7 @@ const router = createBrowserRouter([
         <PrivateLayout />
       </ProtectedRoute>
     ),
-    children: [{ path: "/design", element: <DesignerLayout /> }],
+    children: [{ path: "design", element: <DesignerLayout /> }],
   },
   {
     path: "*",
