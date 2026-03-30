@@ -9,6 +9,7 @@ import AuthLayout from "./layouts/AuthLayout";
 import PrivateLayout from "./layouts/PrivateLayout";
 import LoginForm from "./components/Auth/LoginForm";
 import RegisterForm from "./components/Auth/RegisterForm";
+import ProtectedRoute from "./components/Auth/ProtectedRoute";
 import { useAuthStore } from "./store/useAuthStore";
 import { referralService } from "./services/referral.service";
 import { AffiliatePage } from "./components/Designer/AffiliateIntegration";
@@ -74,7 +75,11 @@ const router = createBrowserRouter([
     ],
   },
   {
-    element: <PrivateLayout />,
+    element: (
+      <ProtectedRoute>
+        <PrivateLayout />
+      </ProtectedRoute>
+    ),
     children: [{ path: "/design", element: <DesignerLayout /> }],
   },
 ]);
