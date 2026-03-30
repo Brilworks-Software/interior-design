@@ -10,6 +10,7 @@ import PrivateLayout from "./layouts/PrivateLayout";
 import LoginForm from "./components/Auth/LoginForm";
 import RegisterForm from "./components/Auth/RegisterForm";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
+import NotFound from "./pages/NotFound";
 import { useAuthStore } from "./store/useAuthStore";
 import { referralService } from "./services/referral.service";
 import { AffiliatePage } from "./components/Designer/AffiliateIntegration";
@@ -58,12 +59,14 @@ class ErrorBoundary extends Component {
 
 const router = createBrowserRouter([
   {
+    path: "/",
+    index: true,
     element: <PublicLayout />,
     children: [
-      { path: "/", element: <RoomSelector /> },
-      { path: "/custom", element: <CustomRoomWizard /> },
-      { path: "/affiliate", element: <AffiliatePage /> },
-      { path: "/resources/:resource", element: <ResourcesPage /> },
+      { index: true, element: <RoomSelector /> },
+      { path: "custom", element: <CustomRoomWizard /> },
+      { path: "affiliate", element: <AffiliatePage /> },
+      { path: "resources/:resource", element: <ResourcesPage /> },
     ],
   },
   {
@@ -81,6 +84,10 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [{ path: "/design", element: <DesignerLayout /> }],
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ]);
 
