@@ -1,13 +1,34 @@
 import { useState, useEffect } from "react";
 import { referralService } from "../../services/referral.service";
-import { Copy, Check, Users, TrendingUp, LogIn, Share2, AlertCircle } from "lucide-react";
+import {
+  Copy,
+  Check,
+  Users,
+  TrendingUp,
+  LogIn,
+  Share2,
+  AlertCircle,
+} from "lucide-react";
 import { Button } from "../components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from "../components/ui/card";
 import { Alert, AlertDescription } from "../components/ui/alert";
 import { Skeleton } from "../components/ui/skeleton";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { useAuthStore } from "../../store/useAuthStore";
 
 export default function AffiliatePanel() {
+  const navigate = useNavigate();
+  const { user: ctxUser, isAuthenticated: ctxIsAuth } = useAuth();
+  const storeUser = useAuthStore((s) => s.user);
+  const isAuthenticated = !!(ctxIsAuth || storeUser);
+  const user = ctxUser || storeUser;
   const [affiliate, setAffiliate] = useState(null);
   const [stats, setStats] = useState(null);
   const [referrals, setReferrals] = useState([]);
@@ -27,9 +48,14 @@ export default function AffiliatePanel() {
       setStats(data.stats);
       setReferrals(data.referrals || []);
     } catch (err) {
-      const message = err.message === "Request failed with status code 404"
-        ? "You are not yet an affiliate. Become one to start earning rewards!"
-        : err.message || "Failed to load affiliate data";
+      const status = err?.response?.status || null;
+      let message = err.message || "Failed to load affiliate data";
+      if (status === 404) {
+        message =
+          "You are not yet an affiliate. Become one to start earning rewards!";
+      } else if (status === 401) {
+        message = "Please log in to view the affiliate dashboard.";
+      }
       toast.error(message);
     } finally {
       setLoading(false);
@@ -111,16 +137,34 @@ export default function AffiliatePanel() {
               Become an Affiliate
             </h3>
             <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-              Earn rewards by referring friends to our interior design app. Start building your affiliate network today!
+              Earn rewards by referring friends to our interior design app.
+              Start building your affiliate network today!
             </p>
-            <Button
-              onClick={handleBecomeAffiliate}
-              disabled={isCreating}
-              size="lg"
-              className="w-full"
-            >
-              {isCreating ? "Creating..." : "Join the Affiliate Program"}
-            </Button>
+            {!isAuthenticated ? (
+              <div className="space-y-3">
+                <p className="text-sm text-muted-foreground mb-2">
+                  Please log in or create an account to join the affiliate
+                  program.
+                </p>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => navigate("/login")}
+                    className="flex-1"
+                  >
+                    Log In
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <Button
+                onClick={handleBecomeAffiliate}
+                disabled={isCreating}
+                size="lg"
+                className="w-full"
+              >
+                {isCreating ? "Creating..." : "Join the Affiliate Program"}
+              </Button>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -164,11 +208,7 @@ export default function AffiliatePanel() {
                 </>
               )}
             </Button>
-            <Button
-              onClick={handleShareLink}
-              size="sm"
-              className="gap-2"
-            >
+            <Button onClick={handleShareLink} size="sm" className="gap-2">
               <Share2 className="h-4 w-4" />
               Share
             </Button>
@@ -209,7 +249,10 @@ export default function AffiliatePanel() {
               </p>
               {stats.total_referrals > 0 && (
                 <p className="text-xs text-muted-foreground mt-1">
-                  {Math.round((stats.completed_signups / stats.total_referrals) * 100)}% conversion
+                  {Math.round(
+                    (stats.completed_signups / stats.total_referrals) * 100,
+                  )}
+                  % conversion
                 </p>
               )}
             </CardContent>
@@ -250,19 +293,26 @@ export default function AffiliatePanel() {
           <CardContent>
             <div className="space-y-3">
               {referrals.map((ref) => (
-                <div key={ref.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                <div
+                  key={ref.id}
+                  className="flex items-center justify-between py-2 border-b border-border last:border-0"
+                >
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-foreground truncate">{ref.email}</p>
+                    <p className="text-sm font-medium text-foreground truncate">
+                      {ref.email}
+                    </p>
                     <p className="text-xs text-muted-foreground">
                       Joined {new Date(ref.created_at).toLocaleDateString()}
                     </p>
                   </div>
-                  <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
-                    ref.status === 'completed' 
-                      ? 'bg-green-100 text-green-700' 
-                      : 'bg-yellow-100 text-yellow-700'
-                  }`}>
-                    {ref.status || 'pending'}
+                  <span
+                    className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                      ref.status === "completed"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-yellow-100 text-yellow-700"
+                    }`}
+                  >
+                    {ref.status || "pending"}
                   </span>
                 </div>
               ))}
