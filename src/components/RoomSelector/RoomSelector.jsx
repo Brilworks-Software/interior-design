@@ -25,7 +25,7 @@ export default function RoomSelector() {
         <button
           onClick={() => {
             loadDemo(demoBedroom);
-            navigate("/design");
+            navigate("/demo/bedroom");
           }}
           className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-secondary transition-colors"
         >
@@ -34,7 +34,7 @@ export default function RoomSelector() {
         <button
           onClick={() => {
             loadDemo(demoLivingRoom);
-            navigate("/design");
+            navigate("/demo/living-room");
           }}
           className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-secondary transition-colors"
         >

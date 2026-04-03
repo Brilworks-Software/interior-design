@@ -1,13 +1,13 @@
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
-import { nanoid } from 'nanoid'
-import { findFreePosition } from '../utils/furnitureCollision'
-import { smartLayout } from '../utils/smartLayout'
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { nanoid } from "nanoid";
+import { findFreePosition } from "../utils/furnitureCollision";
+import { smartLayout } from "../utils/smartLayout";
 
-const MAX_HISTORY = 50
+const MAX_HISTORY = 50;
 
 function cloneObjects(objects) {
-  return JSON.parse(JSON.stringify(objects))
+  return JSON.parse(JSON.stringify(objects));
 }
 
 const useDesignerStore = create(
@@ -16,26 +16,31 @@ const useDesignerStore = create(
       // Signup Modal State
       showSignupModal: false,
       signupModalClosable: true,
-      setShowSignupModal: (show, closable = true) => set({ 
-        showSignupModal: show, 
-        signupModalClosable: closable 
-      }),
+      // 'form' | 'prompt' - controls which modal to show in layout
+      signupModalType: "form",
+      setShowSignupModal: (show, closable = true, type = "form") =>
+        set({
+          showSignupModal: show,
+          signupModalClosable: closable,
+          signupModalType: type,
+        }),
 
       // Room
       selectedRoom: null,
-      roomWallColor: null,   // null = use room default
-      roomFloorColor: null,  // null = use room default
-      setRoom: (room) => set({
-        selectedRoom: room,
-        objects: [],
-        selectedObjectId: null,
-        roomWallColor: null,
-        roomFloorColor: null,
-        history: [[]],
-        historyIndex: 0,
-        viewMode: 'dollhouse',
-        lightingMode: 'off',
-      }),
+      roomWallColor: null, // null = use room default
+      roomFloorColor: null, // null = use room default
+      setRoom: (room) =>
+        set({
+          selectedRoom: room,
+          objects: [],
+          selectedObjectId: null,
+          roomWallColor: null,
+          roomFloorColor: null,
+          history: [[]],
+          historyIndex: 0,
+          viewMode: "dollhouse",
+          lightingMode: "off",
+        }),
       setWallColor: (color) => set({ roomWallColor: color }),
       setFloorColor: (color) => set({ roomFloorColor: color }),
 
@@ -44,57 +49,82 @@ const useDesignerStore = create(
 
       addObject: (furnitureId, catalogItem) => {
         set((state) => {
-          const draft = { furnitureId, rotation: 0, scale: 1 }
+          const draft = { furnitureId, rotation: 0, scale: 1 };
           const position = state.selectedRoom
             ? findFreePosition(draft, state.objects, state.selectedRoom)
-            : [0, 0, 0]
+            : [0, 0, 0];
           const newObj = {
             id: nanoid(),
             furnitureId,
             position,
             rotation: 0,
             scale: 1,
-            color: catalogItem?.defaultColor ?? '#8B7355',
-          }
-          const newObjects = [...state.objects, newObj]
-          const history = [...state.history.slice(0, state.historyIndex + 1), cloneObjects(newObjects)].slice(-MAX_HISTORY)
-          return { objects: newObjects, selectedObjectId: newObj.id, history, historyIndex: history.length - 1 }
-        })
+            color: catalogItem?.defaultColor ?? "#8B7355",
+          };
+          const newObjects = [...state.objects, newObj];
+          const history = [
+            ...state.history.slice(0, state.historyIndex + 1),
+            cloneObjects(newObjects),
+          ].slice(-MAX_HISTORY);
+          return {
+            objects: newObjects,
+            selectedObjectId: newObj.id,
+            history,
+            historyIndex: history.length - 1,
+          };
+        });
       },
 
       updateObject: (id, changes) => {
         set((state) => {
-          const newObjects = state.objects.map((o) => (o.id === id ? { ...o, ...changes } : o))
-          const history = [...state.history.slice(0, state.historyIndex + 1), cloneObjects(newObjects)].slice(-MAX_HISTORY)
-          return { objects: newObjects, history, historyIndex: history.length - 1 }
-        })
+          const newObjects = state.objects.map((o) =>
+            o.id === id ? { ...o, ...changes } : o,
+          );
+          const history = [
+            ...state.history.slice(0, state.historyIndex + 1),
+            cloneObjects(newObjects),
+          ].slice(-MAX_HISTORY);
+          return {
+            objects: newObjects,
+            history,
+            historyIndex: history.length - 1,
+          };
+        });
       },
 
       // Position-only update during drag — does NOT add to history
       moveObject: (id, position) => {
         set((state) => ({
-          objects: state.objects.map((o) => (o.id === id ? { ...o, position } : o)),
-        }))
+          objects: state.objects.map((o) =>
+            o.id === id ? { ...o, position } : o,
+          ),
+        }));
       },
 
       // Live property update (e.g. slider in-progress) — does NOT add to history
       updateObjectLive: (id, changes) => {
         set((state) => ({
-          objects: state.objects.map((o) => (o.id === id ? { ...o, ...changes } : o)),
-        }))
+          objects: state.objects.map((o) =>
+            o.id === id ? { ...o, ...changes } : o,
+          ),
+        }));
       },
 
       removeObject: (id) => {
         set((state) => {
-          const newObjects = state.objects.filter((o) => o.id !== id)
-          const history = [...state.history.slice(0, state.historyIndex + 1), cloneObjects(newObjects)].slice(-MAX_HISTORY)
+          const newObjects = state.objects.filter((o) => o.id !== id);
+          const history = [
+            ...state.history.slice(0, state.historyIndex + 1),
+            cloneObjects(newObjects),
+          ].slice(-MAX_HISTORY);
           return {
             objects: newObjects,
-            selectedObjectId: state.selectedObjectId === id ? null : state.selectedObjectId,
+            selectedObjectId:
+              state.selectedObjectId === id ? null : state.selectedObjectId,
             history,
             historyIndex: history.length - 1,
-          }
-        })
+          };
+        });
       },
 
       // Selection
@@ -107,7 +137,7 @@ const useDesignerStore = create(
       setDraggingId: (id) => set({ draggingId: id }),
 
       // Camera view mode
-      viewMode: 'dollhouse',
+      viewMode: "dollhouse",
       setViewMode: (mode) => set({ viewMode: mode }),
 
       // Grid snap
@@ -121,19 +151,22 @@ const useDesignerStore = create(
       toggleWallSnap: () => set((s) => ({ wallSnap: !s.wallSnap })),
 
       // Lighting mood
-      lightingMode: 'off',   // 'off' | 'bright' | 'cozy' | 'evening' | 'night'
+      lightingMode: "off", // 'off' | 'bright' | 'cozy' | 'evening' | 'night'
       setLightingMode: (mode) => set({ lightingMode: mode }),
 
       // Realistic 3D models (GLB) toggle
       realisticMode: false,
-      toggleRealisticMode: () => set((s) => ({ realisticMode: !s.realisticMode })),
+      toggleRealisticMode: () =>
+        set((s) => ({ realisticMode: !s.realisticMode })),
 
       // Measurements
       showRoomDimensions: false,
       showProductDimensions: false,
-      measureUnit: 'ft',
-      toggleRoomDimensions: () => set((s) => ({ showRoomDimensions: !s.showRoomDimensions })),
-      toggleProductDimensions: () => set((s) => ({ showProductDimensions: !s.showProductDimensions })),
+      measureUnit: "ft",
+      toggleRoomDimensions: () =>
+        set((s) => ({ showRoomDimensions: !s.showRoomDimensions })),
+      toggleProductDimensions: () =>
+        set((s) => ({ showProductDimensions: !s.showProductDimensions })),
       setMeasureUnit: (unit) => set({ measureUnit: unit }),
 
       // History (undo/redo)
@@ -141,27 +174,39 @@ const useDesignerStore = create(
       historyIndex: -1,
 
       undo: () => {
-        const { history, historyIndex } = get()
-        if (historyIndex <= 0) return
-        set({ objects: history[historyIndex - 1], historyIndex: historyIndex - 1, selectedObjectId: null })
+        const { history, historyIndex } = get();
+        if (historyIndex <= 0) return;
+        set({
+          objects: history[historyIndex - 1],
+          historyIndex: historyIndex - 1,
+          selectedObjectId: null,
+        });
       },
 
       redo: () => {
-        const { history, historyIndex } = get()
-        if (historyIndex >= history.length - 1) return
-        set({ objects: history[historyIndex + 1], historyIndex: historyIndex + 1, selectedObjectId: null })
+        const { history, historyIndex } = get();
+        if (historyIndex >= history.length - 1) return;
+        set({
+          objects: history[historyIndex + 1],
+          historyIndex: historyIndex + 1,
+          selectedObjectId: null,
+        });
       },
 
       // Export / Import
       exportDesign: () => {
-        const { selectedRoom, objects, roomWallColor, roomFloorColor } = get()
-        return JSON.stringify({ selectedRoom, objects, roomWallColor, roomFloorColor }, null, 2)
+        const { selectedRoom, objects, roomWallColor, roomFloorColor } = get();
+        return JSON.stringify(
+          { selectedRoom, objects, roomWallColor, roomFloorColor },
+          null,
+          2,
+        );
       },
 
       importDesign: (json) => {
         try {
-          const data = JSON.parse(json)
-          const importedObjects = data.objects ?? []
+          const data = JSON.parse(json);
+          const importedObjects = data.objects ?? [];
           set({
             selectedRoom: data.selectedRoom,
             objects: importedObjects,
@@ -170,37 +215,51 @@ const useDesignerStore = create(
             selectedObjectId: null,
             history: [cloneObjects(importedObjects)],
             historyIndex: 0,
-          })
+          });
         } catch (e) {
-          console.error('Failed to import design:', e)
+          console.error("Failed to import design:", e);
         }
       },
 
       // Copy / Paste
       copiedObjectData: null,
       copyObject: (id) => {
-        const obj = get().objects.find((o) => o.id === id)
-        if (obj) set({ copiedObjectData: { ...obj } })
+        const obj = get().objects.find((o) => o.id === id);
+        if (obj) set({ copiedObjectData: { ...obj } });
       },
       pasteObject: () => {
-        const { copiedObjectData, selectedRoom } = get()
-        if (!copiedObjectData) return
+        const { copiedObjectData, selectedRoom } = get();
+        if (!copiedObjectData) return;
         set((state) => {
-          const startX = copiedObjectData.position[0] + 1.5
-          const startZ = copiedObjectData.position[2] + 1.5
+          const startX = copiedObjectData.position[0] + 1.5;
+          const startZ = copiedObjectData.position[2] + 1.5;
           const position = selectedRoom
-            ? findFreePosition(copiedObjectData, state.objects, selectedRoom, startX, startZ)
-            : [startX, 0, startZ]
-          const newObj = { ...copiedObjectData, id: nanoid(), position }
-          const newObjects = [...state.objects, newObj]
-          const history = [...state.history.slice(0, state.historyIndex + 1), cloneObjects(newObjects)].slice(-MAX_HISTORY)
-          return { objects: newObjects, selectedObjectId: newObj.id, history, historyIndex: history.length - 1 }
-        })
+            ? findFreePosition(
+                copiedObjectData,
+                state.objects,
+                selectedRoom,
+                startX,
+                startZ,
+              )
+            : [startX, 0, startZ];
+          const newObj = { ...copiedObjectData, id: nanoid(), position };
+          const newObjects = [...state.objects, newObj];
+          const history = [
+            ...state.history.slice(0, state.historyIndex + 1),
+            cloneObjects(newObjects),
+          ].slice(-MAX_HISTORY);
+          return {
+            objects: newObjects,
+            selectedObjectId: newObj.id,
+            history,
+            historyIndex: history.length - 1,
+          };
+        });
       },
 
       // Load demo design
       loadDemo: (demo) => {
-        const objects = demo.objects.map((o) => ({ ...o, id: nanoid() }))
+        const objects = demo.objects.map((o) => ({ ...o, id: nanoid() }));
         set({
           selectedRoom: demo.selectedRoom,
           objects,
@@ -209,22 +268,22 @@ const useDesignerStore = create(
           selectedObjectId: null,
           history: [cloneObjects(objects)],
           historyIndex: 0,
-          viewMode: 'dollhouse',
-          lightingMode: 'cozy',
-        })
+          viewMode: "dollhouse",
+          lightingMode: "cozy",
+        });
       },
 
       // Set up room from chat parser result
       setupFromChat: (parsed) => {
-        const room = parsed.room
-        if (!room) return
+        const room = parsed.room;
+        if (!room) return;
 
         // Use smart layout for intelligent placement
-        const layoutItems = smartLayout(parsed.items, room)
+        const layoutItems = smartLayout(parsed.items, room);
         const objects = layoutItems.map((item) => ({
           id: nanoid(),
           ...item,
-        }))
+        }));
 
         set({
           selectedRoom: room,
@@ -234,13 +293,13 @@ const useDesignerStore = create(
           selectedObjectId: null,
           history: [cloneObjects(objects)],
           historyIndex: 0,
-          viewMode: 'dollhouse',
-          lightingMode: 'off',
-        })
+          viewMode: "dollhouse",
+          lightingMode: "off",
+        });
       },
     }),
     {
-      name: 'designer-storage',
+      name: "designer-storage",
       partialize: (state) => ({
         selectedRoom: state.selectedRoom,
         objects: state.objects,
@@ -255,10 +314,10 @@ const useDesignerStore = create(
         showProductDimensions: state.showProductDimensions,
         lightingMode: state.lightingMode,
         history: state.history,
-        historyIndex: state.historyIndex
-      })
-    }
-  )
-)
+        historyIndex: state.historyIndex,
+      }),
+    },
+  ),
+);
 
-export default useDesignerStore
+export default useDesignerStore;

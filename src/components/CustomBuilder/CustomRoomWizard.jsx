@@ -58,7 +58,7 @@ export default function CustomRoomWizard() {
   function handleFinish() {
     // Require login before creating/saving a room/project
     if (!user) {
-      setShowSignupModal(true, false);
+      setShowSignupModal(true, true, "prompt");
       return;
     }
 
