@@ -33,7 +33,7 @@ export default function Toolbar() {
   function handleExport() {
     if (!user) {
       // Require login before exporting
-      setShowSignupModal(true, false);
+      setShowSignupModal(true, true, "prompt");
       return;
     }
     const json = exportDesign();
@@ -61,6 +61,10 @@ export default function Toolbar() {
   }
 
   function handleImport() {
+    if (!user) {
+      setShowSignupModal(true, true, "prompt");
+      return;
+    }
     const input = document.createElement("input");
     input.type = "file";
     input.accept = ".json";
@@ -77,7 +81,7 @@ export default function Toolbar() {
   function handleScreenshot() {
     if (!user) {
       // Require login before taking/downloading screenshots
-      setShowSignupModal(true, false);
+      setShowSignupModal(true, true, "prompt");
       return;
     }
     const canvas = document.querySelector("canvas");
@@ -168,65 +172,12 @@ export default function Toolbar() {
         </button>
         <button
           onClick={handleScreenshot}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-primary text-white rounded hover:bg-secondary transition-colors"
+          className="flex items-center  gap-1.5 px-3 py-1.5 text-sm bg-primary text-white rounded hover:bg-secondary transition-colors"
           title="Screenshot"
         >
           <Camera size={14} />
           <span>Screenshot</span>
         </button>
-
-        {/* User Account Menu */}
-        <div className="w-px h-5 bg-gray-200 mx-2" />
-        {user ? (
-          <div className="relative">
-            <button
-              onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded border border-gray-200 hover:bg-gray-100 transition-colors"
-              title="User account"
-            >
-              <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center">
-                <User size={12} className="text-white" />
-              </div>
-              <span className="text-xs font-medium text-gray-700">
-                {user.name}
-              </span>
-            </button>
-
-            {/* Dropdown Menu */}
-            {showUserMenu && (
-              <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-                <div className="px-4 py-3 border-b border-gray-100">
-                  <div className="text-xs font-medium text-gray-900">
-                    {user.name}
-                  </div>
-                  <div className="text-xs text-gray-500">{user.email}</div>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  className="w-full flex items-center gap-2 px-4 py-2 text-xs text-gray-600 hover:bg-gray-50 transition-colors"
-                >
-                  <LogOut size={12} />
-                  <span>Sign Out</span>
-                </button>
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={() => navigate("/login")}
-              className="px-3 py-1.5 text-xs font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"
-            >
-              Sign In
-            </button>
-            <button
-              onClick={() => navigate("/register")}
-              className="px-3 py-1.5 bg-primary text-white text-xs font-medium rounded hover:bg-secondary transition-colors"
-            >
-              Sign Up
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Toaster } from "sonner";
 import RoomSelector from "./components/RoomSelector/RoomSelector";
 import DesignerLayout from "./components/Designer/DesignerLayout";
+import DemoDesigner from "./components/Designer/DemoDesigner";
 import CustomRoomWizard from "./components/CustomBuilder/CustomRoomWizard";
 import PublicLayout from "./layouts/PublicLayout";
 import AuthLayout from "./layouts/AuthLayout";
@@ -15,6 +16,7 @@ import { useAuthStore } from "./store/useAuthStore";
 import { referralService } from "./services/referral.service";
 import { AffiliatePage } from "./components/Designer/AffiliateIntegration";
 import ResourcesPage from "./pages/ResourcesPage";
+import GlobalLoginReminder from "./components/GlobalLoginReminder";
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -64,6 +66,8 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <RoomSelector /> },
       { path: "custom", element: <CustomRoomWizard /> },
+      { path: "demo/bedroom", element: <DemoDesigner demo="bedroom" /> },
+      { path: "demo/living-room", element: <DemoDesigner demo="livingroom" /> },
       { path: "affiliate", element: <AffiliatePage /> },
       { path: "resources/:resource", element: <ResourcesPage /> },
     ],
@@ -102,6 +106,7 @@ export default function App() {
   return (
     <ErrorBoundary>
       <RouterProvider router={router} />
+      <GlobalLoginReminder />
       <Toaster position="top-right" richColors closeButton />
     </ErrorBoundary>
   );
